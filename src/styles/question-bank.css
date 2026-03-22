@@ -1,0 +1,169 @@
+.questions-table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.questions-table th {
+	border-right: 1px solid var(--border-solid);
+	padding-right: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+}
+
+.questions-table td {
+	height: 20px;
+}
+
+.view-button {
+	background-color: var(--bg-primary);
+	color: white;
+	padding: 10px 20px;
+	border-radius: 50px;
+	font-size: 14px;
+	cursor: pointer;
+	border: solid;
+	border-width: 1px;
+	border-color: var(--accent-primary);
+	transition: background-color 0.15s;
+}
+
+.view-button:hover {
+	background-color: var(--accent-hover);
+}
+
+.questions-grid {
+	margin-top: 20px;
+}
+
+.questions-grid-header,
+.question-row {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	column-gap: 5px;
+	row-gap: 10px;
+}
+
+.question-row {
+	margin-top: 10px;
+}
+
+.questions-grid-item {
+	display: flex;
+	align-items: center;
+}
+
+.status-tag,
+.difficulty-tag {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 100px;
+	border: 1px solid transparent;
+	font-size: 14px;
+}
+
+.status-correct,
+.difficulty-e {
+	background-color: var(--success-bg);
+	color: var(--success);
+	border-color: var(--success-border);
+}
+
+.status-unsolved {
+	background-color: var(--border-color);
+	color: var(--text-primary);
+	border-color: var(--border-solid);
+}
+
+.status-incorrect,
+.difficulty-h {
+	background-color: var(--error-bg);
+	color: var(--error);
+	border-color: var(--error-border);
+}
+
+.difficulty-m {
+	background-color: var(--warning-bg);
+	color: var(--warning);
+	border-color: var(--warning-border);
+}
+
+.filter-options {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.filter-option {
+	display: inline-flex;
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+	border: 1px solid var(--border-color);
+	padding: 10px 20px;
+	border-radius: 10px;
+	flex: 1 1 auto;
+	min-width: 120px;
+	max-width: calc(50% - 10px);
+	box-sizing: border-box;
+}
+
+.filter-options input.filter-option {
+	flex: 1 1 auto;
+	min-width: 120px;
+	max-width: none;
+}
+
+.filter-option select {
+	min-width: 80px;
+	max-width: 150px;
+	box-sizing: border-box;
+}
+
+.filter-option input {
+	width: fit-content;
+	min-width: 0;
+}
+
+@media (max-width: 900px) {
+	.status-tag,
+	.difficulty-tag {
+		font-size: 10px;
+	}
+}
+
+/* Telefon: 1 kolon (alt alta) */
+@media (max-width: 600px) {
+	.questions-grid-header,
+	.question-row {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.questions-grid {
+		margin: 0;
+	}
+
+	.filter-options {
+		flex-direction: column;
+		flex-wrap: nowrap;
+		gap: 10px;
+	}
+}
+
+.pagination-container {
+	display: flex;
+	gap: 10px;
+}
+
+.pagination-items-input {
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+	border-style: none;
+	border-radius: 100px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+	padding: 10px 20px;
+	min-width: 15px;
+	max-width: 25px;
+	text-align: center;
+}
