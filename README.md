@@ -38,6 +38,14 @@ satLAB is a feature-rich, modern web application designed to help students prepa
 - ⚡ **Powered by SvelteKit 5**  
   Lightning-fast performance with modern web technologies.
 
+## 🌐 Live Demo
+
+<p align="center">
+  <a href="https://satlab-zeta.vercel.app/">
+    <img src="https://img.shields.io/badge/🚀%20Try%20satLAB-Live%20Demo-blue?style=for-the-badge" alt="Live Demo Button" />
+  </a>
+</p>
+
 ## 🚀 Getting Started
 
 Get up and running locally in just a few steps:
@@ -69,15 +77,6 @@ Start the development server:
 ```bash
 npm run dev
 ```
-
-### 🌐 Live Demo
-
-<p align="center">
-  <a href="https://satlab-zeta.vercel.app/">
-    <img src="https://img.shields.io/badge/🚀%20Try%20satLAB-Live%20Demo-blue?style=for-the-badge" alt="Live Demo Button" />
-  </a>
-</p>
-
 
 ### Building for Production
 
