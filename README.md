@@ -7,7 +7,7 @@
 
 satLAB is a feature-rich, modern web application designed to help students prepare for the SAT exam. It provides a comprehensive question bank, advanced mock question viewing, and progress tracking with daily performance summaries.
 
-![satLAB Banner](https://raw.githubusercontent.com/tunaerturk/satlab/main/static/images/banner.png)
+![satLAB Banner](https://github.com/tunaerturk/satlab/blob/443c182e93c6bc930febc14ed86df2f1963ccc37/static/banner.png)
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-in%20development-orange?style=for-the-badge" alt="status badge" />
