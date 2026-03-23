@@ -10,7 +10,6 @@ export class PageTimer {
 	}
 
 	start = (): void => {
-		if (this.time) return;
 		this.active = true;
 		this.timer = setInterval(() => {
 			this.time++;
@@ -18,7 +17,6 @@ export class PageTimer {
 	};
 
 	stop = (): void => {
-		if (!this.timer) return;
 		this.active = false;
 		clearInterval(this.timer);
 	};
