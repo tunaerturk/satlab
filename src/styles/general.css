@@ -86,18 +86,18 @@ body {
 
 .purple-button {
 	background-color: var(--bg-primary);
-	color: var(--text-primary);
+	color: var(--accent-primary);
 	border-style: solid;
 	padding: 10px 20px;
 	border-radius: 10px;
 	border-color: var(--accent-primary);
 
-	transition: background-color 0.15s;
+	transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .purple-button:hover {
 	background-color: var(--accent-primary);
-	color: var(--text-primary);
+	color: var(--bg-primary);
 }
 
 .loading-overlay {

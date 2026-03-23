@@ -24,11 +24,12 @@
 	border: solid;
 	border-width: 1px;
 	border-color: var(--accent-primary);
-	transition: background-color 0.15s;
+	transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .view-button:hover {
 	background-color: var(--accent-hover);
+	color: var(--bg-primary);
 }
 
 .questions-grid {
@@ -94,6 +95,8 @@
 	gap: 10px;
 	width: 100%;
 	box-sizing: border-box;
+	align-items: center;
+	justify-content: center;
 }
 
 .filter-option {
