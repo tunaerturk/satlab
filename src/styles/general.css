@@ -86,7 +86,7 @@ body {
 
 .purple-button {
 	background-color: var(--bg-primary);
-	color: white;
+	color: var(--text-primary);
 	border-style: solid;
 	padding: 10px 20px;
 	border-radius: 10px;
