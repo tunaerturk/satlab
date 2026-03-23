@@ -30,7 +30,6 @@
 	let activeId = $derived(question.externalid);
 
 	$effect(() => {
-		// Reset state when question changes
 		showAnswer = false;
 		selectedAnswerId = '';
 
@@ -43,6 +42,12 @@
 		});
 	});
 
+	function difficultyLabel(d: string) {
+		if (d === 'H') return 'Hard';
+		if (d === 'M') return 'Medium';
+		if (d === 'E') return 'Easy';
+		return d;
+	}
 	let screenWidth = $state(0);
 </script>
 
@@ -52,17 +57,41 @@
 	<div class="question-page-header">
 		{#if screenWidth > 600}
 			<div class="page-controls">
-				<QPageControlLeft />
+				{#if prevId}
+					<QPageControlLeft />
+				{:else}
+					<div style="width: 40px;"></div>
+				{/if}
 				<div class="page-title">
 					<div>Question Viewer</div>
 					<div class="question-id-text">Question ID: {question.externalid}</div>
+					{#if questions[currentIndex]}
+						<div class="question-id-text">
+							{questions[currentIndex].primary_class_cd_desc}: {questions[currentIndex].skill_desc}
+							<strong class="difficulty-{questions[currentIndex].difficulty.toLowerCase()}">
+								{difficultyLabel(questions[currentIndex].difficulty)}
+							</strong>
+						</div>
+					{/if}
 				</div>
-				<QPageControlRight />
+				{#if nextId}
+					<QPageControlRight />
+				{:else}
+					<div style="width: 40px;"></div>
+				{/if}
 			</div>
 		{:else}
 			<div class="page-title">
 				<div>Question Viewer</div>
 				<div class="question-id-text">Question ID: {question.externalid}</div>
+				{#if questions[currentIndex]}
+					<div class="question-id-text">
+						{questions[currentIndex].primary_class_cd_desc}: {questions[currentIndex].skill_desc}
+						<strong class="difficulty-{questions[currentIndex].difficulty.toLowerCase()}">
+							{difficultyLabel(questions[currentIndex].difficulty)}
+						</strong>
+					</div>
+				{/if}
 			</div>
 		{/if}
 		<div class="question-controls">
