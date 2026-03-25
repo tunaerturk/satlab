@@ -37,7 +37,8 @@ const getQuestionsFromCache = async () => {
 self.addEventListener('install', (event) => {
 	async function addFilesToCache() {
 		const cache = await caches.open(CACHE);
-		cache.addAll(ASSETS);
+		await cache.addAll(ASSETS);
+		await self.skipWaiting();
 	}
 
 	event.waitUntil(addFilesToCache());
@@ -61,25 +62,35 @@ self.addEventListener('fetch', (event) => {
 	async function respond() {
 		const url = new URL(event.request.url);
 		const cache = await caches.open(CACHE);
+		const isHttp = url.protocol == "http:" || url.protocol == "https:";
 
-		if (ASSETS.includes(url.pathname)) {
-			const cachedResponse = await cache.match(url.pathname);
-			if (cachedResponse) {
-				return cachedResponse;
+		if(!isHttp) {
+			return fetch(event.request);
+		}
+
+		if(event.request.mode === "navigate") {
+			try {
+				const response = await fetch(event.request);
+				if (response.ok) {
+					cache.put(event.request, response.clone());
+				}
+				return response;
+			} catch {
+				const cachedResponse = (await cache.match(event.request)) ||
+									  (await cache.match("/"))
+
+				if (cachedResponse) {
+					return cachedResponse
+				} else {
+					return new Response("Offline", {
+						status: 503,
+						headers: {"Content-Type": "text/plain"}
+					})
+				}
 			}
 		}
 
-		try {
-			const response = await fetch(event.request);
-			const isNotExtension = url.protocol.includes('http');
-			const isSuccess = response.status === 200;
-
-			if (isSuccess) {
-				cache.put(event.request, response.clone());
-			}
-
-			return response;
-		} catch {
+		if (ASSETS.includes(url.pathname)) {
 			const cachedResponse = await cache.match(url.pathname);
 			if (cachedResponse) {
 				return cachedResponse;
