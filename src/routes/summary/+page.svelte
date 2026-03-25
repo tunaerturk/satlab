@@ -2,11 +2,11 @@
 	import { resetAnswers } from '$lib/stores/userStore.svelte';
 	import type { PageProps } from '../$types';
 	import { SummaryStats } from '$lib/classes/summaryClasses.svelte';
-	import { questionsStore } from '$lib/stores/questionsStore.svelte';
+	import { rw_questions } from '$lib/stores/questionsStore.svelte';
 
 	let { data }: PageProps = $props();
 
-	let summaryStats: SummaryStats = $derived(new SummaryStats($questionsStore));
+	let summaryStats: SummaryStats = $derived(new SummaryStats($rw_questions));
 	const diffMap: Record<string, string> = { E: 'Easy', M: 'Medium', H: 'Hard' };
 </script>
 

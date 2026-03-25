@@ -3,13 +3,16 @@
 	import { fly } from 'svelte/transition';
 	import type { PageProps } from '../$types';
 	import { FilterQuestions, Pagination } from '$lib/classes/questionBankClasses.svelte';
-	import { questionsStore } from '$lib/stores/questionsStore.svelte';
-	import { icons } from '$lib/stores/generalStores.svelte';
+	import { math_questions, rw_questions } from '$lib/stores/questionsStore.svelte';
 	import Loading from '$lib/components/Loading.svelte';
+	import { userAnswers } from '$lib/stores/userStore.svelte';
+	import { categoryState } from '$lib/stores/generalStores.svelte';
 
 	let { data }: PageProps = $props();
-	let questions = $derived($questionsStore);
-	let userAnswers: Record<string, any> = $derived(data.userAnswers);
+	let questions = $derived({ $math_questions, $rw_questions });
+	let activeQuestions = $derived(
+		$categoryState === 'math' ? questions.$math_questions : questions.$rw_questions
+	);
 
 	let screenWidth = $state(0);
 
@@ -22,7 +25,9 @@
 		return d;
 	}
 
-	let filterQuestions: FilterQuestions = $derived(new FilterQuestions(questions, userAnswers));
+	let filterQuestions: FilterQuestions = $derived(
+		new FilterQuestions(activeQuestions, userAnswers)
+	);
 
 	let pagination: Pagination = $derived(new Pagination(filterQuestions.filteredQuestions));
 </script>
@@ -30,9 +35,23 @@
 <svelte:window bind:innerWidth={screenWidth} />
 
 <div class="page-title">
-	Question Bank
+	<div class="category-container">
+		<input
+			class="category-button {$categoryState === 'math' ? 'category-button-selected' : ''}"
+			type="button"
+			value="Math"
+			onclick={() => categoryState.set("math")}
+		/>
+		<p>Question Bank</p>
+		<input
+			class="category-button {$categoryState === 'rw' ? 'category-button-selected' : ''}"
+			type="button"
+			value="Read & Write"
+			onclick={() => categoryState.set("rw")}
+		/>
+	</div>
 	<div class="question-id-text">
-		{filterQuestions.filteredQuestions.length} of {questions.length}
+		{filterQuestions.filteredQuestions.length} of {activeQuestions.length}
 	</div>
 	{#if screenWidth > 600}
 		{@render filterOptions()}
@@ -126,45 +145,45 @@
 		</div>
 	{/if}
 	{#each pagination.paginatedQuestions as question}
-		<div class="question-row">
-			{#if screenWidth > 600}
-				<div class="questions-grid-item truncate-text">{question.external_id}</div>
-			{/if}
-			{#if screenWidth > 600}
-				{#if userAnswers[question.external_id]}
-					<div
-						class="questions-grid-item status-tag status-{userAnswers[question.external_id]
-							.isCorrect
-							? 'correct'
-							: 'incorrect'}"
-					>
-						{userAnswers[question.external_id].isCorrect ? 'CORRECT' : 'INCORRECT'}
-					</div>
-				{:else}
-					<div class="questions-grid-item status-tag status-unsolved">UNSOLVED</div>
+			<div class="question-row">
+				{#if screenWidth > 600}
+					<div class="questions-grid-item truncate-text">{question.external_id}</div>
 				{/if}
-			{/if}
-			<div class="questions-grid-item">{question.primary_class_cd_desc}</div>
-			<div class="questions-grid-item">{question.skill_desc}</div>
-			{#if screenWidth > 600}
-				<div
-					class="questions-grid-item difficulty-tag difficulty-{question.difficulty.toLowerCase()}"
-				>
-					{difficultyLabel(question.difficulty)}
+				{#if screenWidth > 600}
+					{#if userAnswers[question.external_id]}
+						<div
+							class="questions-grid-item status-tag status-{userAnswers[question.external_id]
+								.isCorrect
+								? 'correct'
+								: 'incorrect'}"
+						>
+							{userAnswers[question.external_id].isCorrect ? 'CORRECT' : 'INCORRECT'}
+						</div>
+					{:else}
+						<div class="questions-grid-item status-tag status-unsolved">UNSOLVED</div>
+					{/if}
+				{/if}
+				<div class="questions-grid-item">{question.primary_class_cd_desc}</div>
+				<div class="questions-grid-item">{question.skill_desc}</div>
+				{#if screenWidth > 600}
+					<div
+						class="questions-grid-item difficulty-tag difficulty-{question.difficulty.toLowerCase()}"
+					>
+						{difficultyLabel(question.difficulty)}
+					</div>
+				{/if}
+				<div class="questions-grid-item">{new Date(question.updateDate).toLocaleDateString()}</div>
+				<div class="questions-grid-item">
+					<input
+						class="view-button"
+						type="button"
+						value="View →"
+						onclick={() => goto(`/question/${question.external_id}`)}
+					/>
 				</div>
-			{/if}
-			<div class="questions-grid-item">{new Date(question.updateDate).toLocaleDateString()}</div>
-			<div class="questions-grid-item">
-				<input
-					class="view-button"
-					type="button"
-					value="View →"
-					onclick={() => goto(`/question/${question.external_id}`)}
-				/>
 			</div>
-		</div>
 	{/each}
-	{#if questions.length === 0}
+	{#if activeQuestions.length === 0}
 		<Loading />
 	{/if}
 </div>

@@ -8,7 +8,7 @@ import { build, files, version } from '$service-worker';
 const CACHE = `cache-${version}`;
 const ASSETS = [...build, ...files];
 
-const saveQuestionsToCache = async (questions: any) => {
+const saveQuestionsToCache = async (questions: any, cacheName: string) => {
 	const cache = await caches.open('questions-cache');
 	const data = JSON.stringify(questions);
 	const response = new Response(data, {
@@ -18,17 +18,20 @@ const saveQuestionsToCache = async (questions: any) => {
 		}
 	});
 
-	await cache.put('offline-questions', response);
+	await cache.put(cacheName, response);
 };
 
 const getQuestionsFromCache = async () => {
 	const cache = await caches.open('questions-cache');
-	const response = await cache.match('offline-questions');
+	const rw_response = await cache.match("offline-rw-questions");
+	const math_response = await cache.match("offline-math-questions")
 
-	if (!response) return [];
+	if (!rw_response && !math_response) return [];
 
 	try {
-		return await response.json();
+		const rw_data = rw_response ? await rw_response.json() : []
+		const math_Data = math_response ? await math_response.json(): []
+		return [rw_data, math_Data]
 	} catch (err) {
 		console.error('Cache parse error:', err);
 		return [];
@@ -62,13 +65,13 @@ self.addEventListener('fetch', (event) => {
 	async function respond() {
 		const url = new URL(event.request.url);
 		const cache = await caches.open(CACHE);
-		const isHttp = url.protocol == "http:" || url.protocol == "https:";
+		const isHttp = url.protocol == 'http:' || url.protocol == 'https:';
 
-		if(!isHttp) {
+		if (!isHttp) {
 			return fetch(event.request);
 		}
 
-		if(event.request.mode === "navigate") {
+		if (event.request.mode === 'navigate') {
 			try {
 				const response = await fetch(event.request);
 				if (response.ok) {
@@ -76,16 +79,15 @@ self.addEventListener('fetch', (event) => {
 				}
 				return response;
 			} catch {
-				const cachedResponse = (await cache.match(event.request)) ||
-									  (await cache.match("/"))
+				const cachedResponse = (await cache.match(event.request)) || (await cache.match('/'));
 
 				if (cachedResponse) {
-					return cachedResponse
+					return cachedResponse;
 				} else {
-					return new Response("Offline", {
+					return new Response('Offline', {
 						status: 503,
-						headers: {"Content-Type": "text/plain"}
-					})
+						headers: { 'Content-Type': 'text/plain' }
+					});
 				}
 			}
 		}
@@ -97,7 +99,7 @@ self.addEventListener('fetch', (event) => {
 			}
 		}
 
-		return new Response('No internet', { status: 404 });
+		return fetch(event.request);
 	}
 
 	//
@@ -121,7 +123,12 @@ self.addEventListener('message', async (event) => {
 	if (event.data.type === 'SAVE_QUESTIONS') {
 		const data = [...event.data.payload].slice(0, 50);
 		// We use waitUntil if the event supports it to keep the SW alive
-		const savePromise = saveQuestionsToCache(data);
-		if (event.waitUntil) event.waitUntil(savePromise);
+		if (event.data.category === 'math') {
+			const savePromise = saveQuestionsToCache(data, 'offline-math-questions');
+			if (event.waitUntil) event.waitUntil(savePromise);
+		} else {
+			const savePromise = saveQuestionsToCache(data, 'offline-rw-questions');
+			if (event.waitUntil) event.waitUntil(savePromise);
+		}
 	}
 });

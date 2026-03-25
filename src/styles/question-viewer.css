@@ -7,7 +7,7 @@
 
 .question-container {
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	padding-right: 25px;
 	gap: 25px;
 }
@@ -132,6 +132,11 @@
 	margin: 0 0 5px 0;
 }
 
+.desmos-calculator {
+	width: 100%;
+	height: 600px;
+	margin-bottom: 10px;
+}
 @media (min-width: 601px) {
 	.question-answer:hover .question-answer-button {
 		background: var(--bg-primary);
@@ -223,6 +228,37 @@
 .question-controls {
 	display: flex;
 	gap: 10px;
+}
+
+.user-input-container {
+	display: flex;
+	gap: 10px;
+}
+
+.user-input-container input {
+	border-style: solid;
+	padding: 10px 20px;
+	border-radius: 10px;
+	border-color: var(--accent-primary);
+}
+
+.user-input-container input[type='text'] {
+	background-color: var(--bg-primary);
+	color: var(--accent-primary);
+
+	max-width: 50%;
+}
+
+.user-input-container input[type='button'] {
+	background-color: var(--accent-primary);
+	color: var(--bg-primary);
+
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.user-input-container input[type='button']:hover {
+	background-color: var(--bg-primary);
+	color: var(--accent-primary);
 }
 
 @media (max-width: 600px) {

@@ -71,6 +71,10 @@ body {
 	gap: 10px;
 }
 
+.page-title p {
+	margin: 0;
+}
+
 .truncate-text {
 	white-space: nowrap;
 	overflow: hidden;

@@ -14,6 +14,8 @@ export let icons = writable({
 export let activePage = writable('');
 export let screenWidth = writable(0);
 
+export let categoryState = writable("rw");
+
 export let themeStore = {
 	current: writable(
 		browser

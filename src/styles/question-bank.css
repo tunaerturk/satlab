@@ -24,7 +24,9 @@
 	border: solid;
 	border-width: 1px;
 	border-color: var(--accent-primary);
-	transition: background-color 0.15s ease, color 0.15s ease;
+	transition:
+		background-color 0.15s ease,
+		color 0.15s ease;
 }
 
 .view-button:hover {
@@ -128,6 +130,35 @@
 	width: fit-content;
 	min-width: 0;
 }
+
+.category-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+}
+
+.category-button {
+	background-color: var(--bg-primary);
+	color: var(--accent-primary);
+	border-style: none;
+	border-bottom-style: solid;
+
+	border-color: transparent;
+	padding: 10px 20px;
+	border-radius: 0px;
+
+	transition: border-color 0.15s ease-out;
+}
+
+.category-button:hover {
+	border-color: var(--accent-hover);
+}
+
+.category-button-selected {
+	border-color: var(--accent-hover);
+}
+
 
 @media (max-width: 900px) {
 	.status-tag,
