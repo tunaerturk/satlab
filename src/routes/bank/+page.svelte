@@ -46,7 +46,7 @@
 		<input
 			class="category-button {$categoryState === 'rw' ? 'category-button-selected' : ''}"
 			type="button"
-			value="Read & Write"
+			value="R&W"
 			onclick={() => categoryState.set("rw")}
 		/>
 	</div>

@@ -37,10 +37,6 @@ export class PageTimer {
 export class SelectTooltip {
 	visible: boolean;
 	text: string;
-	coords: {
-		x: number;
-		y: number;
-	};
 
 	result: {
 		show: boolean;
@@ -50,10 +46,6 @@ export class SelectTooltip {
 	constructor() {
 		this.visible = $state(false);
 		this.text = $state('');
-		this.coords = $state({
-			x: 0,
-			y: 0
-		});
 		this.result = $state({
 			show: false,
 			text: ''
@@ -78,8 +70,6 @@ export class SelectTooltip {
 		const rect = range.getBoundingClientRect();
 
 		this.text = text;
-		this.coords.x = rect.right - rect.left / 2;
-		this.coords.y = rect.bottom;
 
 		this.visible = true;
 

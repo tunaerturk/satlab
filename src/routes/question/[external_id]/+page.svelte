@@ -2,17 +2,16 @@
 	import QPageControlLeft from '$lib/components/question-viewer/Q-PageControlLeft.svelte';
 	import QPageControlRight from '$lib/components/question-viewer/Q-PageControlRight.svelte';
 	import { question_viewer } from '$lib/stores/questionViewer.svelte';
-	import { saveAnswer, userAnswers } from '$lib/stores/userStore.svelte';
+	import { saveAnswer } from '$lib/stores/userStore.svelte';
 	import { fade, fly } from 'svelte/transition';
 	import type { PageProps } from './$types';
 	import { PageTimer, SelectTooltip } from '$lib/classes/questionViewerClasses.svelte';
 	import { math_questions, rw_questions } from '$lib/stores/questionsStore.svelte';
-	import type { RWSATQuestion } from '$lib/types';
 
 	let { data }: PageProps = $props();
 
 	let question = $derived(data.question);
-	let questions = $derived((question.stimulus ? $rw_questions : $math_questions) ?? []);
+	let questions = $derived(question.stimulus ? $rw_questions : $math_questions ?? []);
 
 	let showAnswer = $state(false);
 	let showCalculator = $state(false);
@@ -25,25 +24,32 @@
 
 	const getLetter = (index: number) => String.fromCharCode(65 + index);
 
-	let currentIndex = $derived(questions.findIndex((q) => q.external_id === question.externalid));
-	let prevId = $derived(currentIndex > 0 ? questions[currentIndex - 1].external_id : '');
-	let nextId = $derived(
-		currentIndex < questions.length - 1 ? questions[currentIndex + 1].external_id : ''
-	);
-	let activeId = $derived(question.externalid);
+let currentIndex = $derived(questions.findIndex((q) => q.external_id === question.externalid));
+let activeId = $derived(question.externalid);
 
-	$effect(() => {
-		showAnswer = false;
-		selectedAnswerId = '';
+$effect(() => {
+	showAnswer = false;
+	selectedAnswerId = '';
 
-		question_viewer.set({
-			prevId: prevId,
-			activeId: activeId,
-			nextId: nextId,
-			showAnswer: false,
-			showPageControls: true
-		});
+	let prevId = '';
+	let nextId = '';
+
+	if (currentIndex > 0) {
+		prevId = questions[currentIndex - 1]?.external_id ?? '';
+	}
+
+	if (currentIndex >= 0 && currentIndex < questions.length - 1) {
+		nextId = questions[currentIndex + 1]?.external_id ?? '';
+	}
+
+	question_viewer.set({
+		prevId,
+		activeId,
+		nextId,
+		showAnswer: false,
+		showPageControls: true
 	});
+});
 
 	function difficultyLabel(d: string) {
 		if (d === 'H') return 'Hard';
@@ -78,17 +84,59 @@
 	</div>
 {/snippet}
 
+{#snippet pageControls()}
+			<div class="page-controls">
+			{#if $question_viewer.prevId && screenWidth > 600}
+				<QPageControlLeft />
+			{/if}
+			<div class="question-controls">
+				{#if screenWidth > 600 && !question.stimulus}
+					<input
+						class="timer-button {showCalculator ? 'timer-red' : ''}"
+						type="button"
+						value="🧮"
+						onclick={() => (showCalculator = showCalculator ? false : true)}
+					/>
+				{/if}
+				<div class="timer-container">
+					<input
+						class="timer-button {pageTimer.active ? 'timer-red' : ''}"
+						type="button"
+						value="&#9201;"
+						onclick={pageTimer.toggle}
+					/>
+					<p>Time: {Math.floor(pageTimer.time / 60)}:{pageTimer.time % 60}</p>
+					{#if !pageTimer.active && pageTimer.time > 0}
+						<input
+							class="timer-button timer-red"
+							type="button"
+							value="&#x21BB;"
+							onclick={pageTimer.reset}
+						/>
+					{/if}
+				</div>
+				<div class="show-answer-container timer-button">
+					<p>Show Answer</p>
+					<input
+						class="show-answer-input"
+						type="checkbox"
+						name=""
+						id=""
+						bind:checked={showAnswer}
+					/>
+				</div>
+			</div>
+			{#if $question_viewer.nextId && screenWidth > 600}
+				<QPageControlRight />
+			{/if}
+		</div>
+{/snippet}
+
 <div class="question-viewer">
 	<div class="question-page-header">
-		{#if screenWidth > 600}
-			<div class="page-controls">
-				{#if prevId}
-					<QPageControlLeft />
-				{:else}
-					<div style="width: 40px;"></div>
-				{/if}
 				<div class="page-title">
 					<div>Question Viewer</div>
+					{@render pageControls()}
 					<div class="question-id-text">Question ID: {question.externalid}</div>
 					{#if questions[currentIndex]}
 						<div class="question-id-text">
@@ -99,58 +147,6 @@
 						</div>
 					{/if}
 				</div>
-				{#if nextId}
-					<QPageControlRight />
-				{:else}
-					<div style="width: 40px;"></div>
-				{/if}
-			</div>
-		{:else}
-			<div class="page-title">
-				<div>Question Viewer</div>
-				<div class="question-id-text">Question ID: {question.externalid}</div>
-				{#if questions[currentIndex]}
-					<div class="question-id-text">
-						{questions[currentIndex].primary_class_cd_desc}: {questions[currentIndex].skill_desc}
-						<strong class="difficulty-{questions[currentIndex].difficulty.toLowerCase()}">
-							{difficultyLabel(questions[currentIndex].difficulty)}
-						</strong>
-					</div>
-				{/if}
-			</div>
-		{/if}
-		<div class="question-controls">
-			<div class="timer-container">
-				{#if screenWidth > 600}
-					<input
-						class="timer-button {showCalculator ? 'timer-red' : ''}"
-						type="button"
-						value="🧮"
-						onclick={() => showCalculator = showCalculator ? false : true}
-					/>
-				{/if}
-				<input
-					class="timer-button {pageTimer.active ? 'timer-red' : ''}"
-					type="button"
-					value="&#9201;"
-					onclick={pageTimer.toggle}
-				/>
-				<p>Time: {Math.floor(pageTimer.time / 60)}:{pageTimer.time % 60}</p>
-				{#if !pageTimer.active && pageTimer.time > 0}
-					<input
-						class="timer-button timer-red"
-						type="button"
-						value="&#x21BB;"
-						onclick={pageTimer.reset}
-					/>
-				{/if}
-			</div>
-
-			<div transition:fly class="show-answer-container">
-				<p>Show Answer</p>
-				<input class="show-answer-input" type="checkbox" name="" id="" bind:checked={showAnswer} />
-			</div>
-		</div>
 	</div>
 
 	<div class="question-container">
@@ -167,7 +163,6 @@
 					<div
 						transition:fly
 						class="select-tooltip"
-						style="top: {selectTooltip.coords.y + 40}px; left: {selectTooltip.coords.y}px;"
 					>
 						<div class="select-tooltip-container">
 							<p>{selectTooltip.text}</p>
@@ -191,7 +186,8 @@
 			</div>
 		{:else}
 			{#if screenWidth > 600 && showCalculator}
-				<iframe transition:fade
+				<iframe
+					transition:fade
 					class="desmos-calculator"
 					src="https://www.desmos.com/testing/collegeboard/graphing"
 					title="desmos calculator"
@@ -204,7 +200,7 @@
 		{/if}
 		<div class="question-answers">
 			{@html question.stem}
-			{#if question.answerOptions.length === 0}
+			{#if !question.answerOptions || question.answerOptions.length === 0}
 				<div class="user-input-container">
 					<input
 						type="text"

@@ -1,5 +1,4 @@
 .question-id-text {
-	margin-top: 10px;
 	font-size: 12px;
 	color: var(--text-secondary);
 	text-align: center;
@@ -80,7 +79,6 @@
 	gap: 10px;
 	justify-content: center;
 	align-items: center;
-	border: 1px solid var(--border-color);
 	border-radius: 50px;
 	padding: 5px;
 	transition: background-color 0.15s;
@@ -94,28 +92,47 @@
 	margin: 0;
 }
 
+.page-controls input[type='button'],
 .timer-button {
 	background-color: var(--accent-primary);
 	color: white;
 	border: none;
 	padding: 10px 20px;
 	border-radius: 100px;
+	border: 1px solid var(--accent-primary);
 	transition: background-color 0.15s;
+}
+
+.page-controls input[type='button']:hover {
+	background-color: var(--bg-primary);
+	border-color: var(--accent-primary);
+	color: var(--accent-primary);
 }
 
 .timer-red {
 	background-color: var(--error);
 }
 
+.question-controls {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	align-items: center;
+	border-style: solid;
+	border-color: var(--border-color);
+	border-width: 0 1px;
+	border-radius: 50px;
+	padding: 0ch 5px;
+	transition: background-color 0.15s;
+}
+
 .select-tooltip {
 	border-radius: 5px;
 	color: white;
 	background-color: var(--tooltip-bg);
-	transform: translateX(-50%);
 	padding: 5px 10px;
 	font-size: 12px;
 	max-width: 300px;
-	position: fixed;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -185,15 +202,22 @@
 
 .page-controls {
 	display: flex;
+	gap: 10px;
 	justify-content: space-between;
 	align-items: center;
+	border: 1px solid var(--border-color);
+	border-radius: 50px;
+	padding: 0ch 5px;
+	transition: background-color 0.15s;
+
+	font-size: 14px;
 }
 
 .show-answer-input {
 	appearance: none;
 	width: 22px;
 	height: 22px;
-	border: 2px solid var(--accent-primary);
+	border: 2px solid white;
 	border-radius: 6px;
 	cursor: pointer;
 	position: relative;
@@ -217,17 +241,13 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: var(--accent-primary);
+	color: white;
+	padding: 5px 10px;
 }
 
 .show-answer-container p {
 	margin: 0;
 	padding-right: 5px;
-}
-
-.question-controls {
-	display: flex;
-	gap: 10px;
 }
 
 .user-input-container {
@@ -253,12 +273,20 @@
 	background-color: var(--accent-primary);
 	color: var(--bg-primary);
 
-	transition: background-color 0.15s ease, color 0.15s ease;
+	transition:
+		background-color 0.15s ease,
+		color 0.15s ease;
 }
 
 .user-input-container input[type='button']:hover {
 	background-color: var(--bg-primary);
 	color: var(--accent-primary);
+}
+
+.image {
+	background-color: white;
+	color: black;
+	border-radius: 10px;
 }
 
 @media (max-width: 600px) {
@@ -294,10 +322,6 @@
 		gap: 25px;
 		width: 100%;
 		box-sizing: border-box;
-	}
-
-	.question-controls {
-		flex-direction: column;
 	}
 
 	.question-paragraph {
@@ -364,5 +388,14 @@
 
 	.timer-container input {
 		padding: 5px 10px;
+	}
+
+	.page-controls {
+		justify-content: center;
+		border-style: none;
+	}
+
+	.select-tooltip {
+			max-width: 100%;
 	}
 }
