@@ -1,5 +1,8 @@
 node_modules
 
+# Dev
+/dev-dist
+
 # Output
 .output
 .vercel
