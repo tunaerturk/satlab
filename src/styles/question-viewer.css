@@ -7,7 +7,6 @@
 .question-container {
 	display: flex;
 	justify-content: center;
-	padding-right: 25px;
 	gap: 25px;
 }
 
